@@ -3,1185 +3,746 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Evaluación Módulo 1 · Contabilidad en Odoo</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- html2pdf.js para descarga directa de PDF -->
+  <title>Evaluación · Módulo 1: Contabilidad en Odoo</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            navy: {
-              DEFAULT: '#0B3954',
-              light: '#134E70',
-              dark: '#07273A',
-            },
-            emeraldOdoo: {
-              DEFAULT: '#00A878',
-              light: '#00C48C',
-              dark: '#008760',
-              soft: '#E6F7F2',
-            },
-            slateBg: '#F8FAFC',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['Plus Jakarta Sans', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
-
   <style>
+    :root {
+      --navy: #0B3954;
+      --navy-dark: #072638;
+      --emerald: #00A878;
+      --emerald-dark: #008760;
+      --bg: #F3F6F9;
+      --card: #FFFFFF;
+      --text: #1E293B;
+      --muted: #5A6B7C;
+      --border: #DCE4EC;
+      --ok-bg: #ECFDF5;
+      --ok-border: #10B981;
+      --bad-bg: #FEF2F2;
+      --bad-border: #EF4444;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #F8FAFC;
-      color: #1E293B;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
     }
-    h1, h2, h3, .font-display {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+
+    header.topbar {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      padding: 20px 24px;
+      border-bottom: 4px solid var(--emerald);
     }
-    /* Estilos de impresión limpios por si el usuario usa Imprimir -> Guardar como PDF */
+
+    .topbar-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .badge-mod {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #A7F3D0;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .timer-box {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 24px auto 56px;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(11, 57, 84, 0.05);
+    }
+
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .q-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--emerald-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .q-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 0 0 14px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .option:hover {
+      border-color: var(--emerald);
+      background: #F8FCFA;
+    }
+
+    .option input {
+      margin-top: 3px;
+      accent-color: var(--emerald);
+    }
+
+    .feedback {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      display: none;
+    }
+
+    .feedback.ok {
+      display: block;
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-border);
+      color: #065F46;
+    }
+
+    .feedback.bad {
+      display: block;
+      background: var(--bad-bg);
+      border: 1px solid var(--bad-border);
+      color: #991B1B;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s, background 0.15s;
+    }
+
+    button:active { transform: scale(0.99); }
+
+    .btn-primary {
+      background: var(--emerald);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--emerald-dark); }
+
+    .btn-navy {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #E2E8F0;
+      color: var(--navy);
+    }
+
+    #result-panel {
+      display: none;
+      margin-top: 24px;
+    }
+
+    .cert-banner {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      border-left: 6px solid var(--emerald);
+      margin-bottom: 18px;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .status-apto { background: var(--emerald); color: #fff; }
+    .status-noapto { background: #DC2626; color: #fff; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .meta-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .meta-box .k { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
+    .meta-box .v { font-size: 16px; font-weight: 800; color: var(--navy); margin-top: 4px; }
+
+    table.breakdown {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+    }
+
+    table.breakdown th, table.breakdown td {
+      border: 1px solid var(--border);
+      padding: 9px 12px;
+      text-align: left;
+    }
+
+    table.breakdown th {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .review-item {
+      border-top: 1px solid var(--border);
+      padding: 10px 0;
+      font-size: 13px;
+    }
+
     @media print {
-      .no-print {
-        display: none !important;
-      }
-      body {
-        background-color: #FFFFFF !important;
-      }
-      .print-container {
-        box-shadow: none !important;
-        border: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-      }
+      .no-print, .timer-box { display: none !important; }
+      body { background: #fff; }
+      .card { box-shadow: none; border-color: #ccc; }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slateBg">
-
-  <!-- Barra superior institucional -->
-  <header class="bg-navy text-white shadow-md no-print">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emeraldOdoo flex items-center justify-center text-white font-display font-extrabold text-lg shadow-sm">
-          <i class="fa-solid fa-calculator"></i>
-        </div>
-        <div>
-          <p class="text-xs uppercase tracking-wider text-emeraldOdoo-light font-semibold">Formación Odoo · Módulo 1</p>
-          <h1 class="text-lg sm:text-xl font-bold tracking-tight">Evaluación de Contabilidad</h1>
-        </div>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div>
+        <span class="badge-mod">Formación Odoo · Módulo 1</span>
+        <h1>Evaluación de Contabilidad</h1>
       </div>
-
-      <!-- Indicador de alumno activo y temporizador -->
-      <div id="headerStatus" class="hidden flex items-center gap-4 text-sm">
-        <div class="hidden sm:flex items-center gap-2 bg-navy-light px-3 py-1.5 rounded-lg border border-white/10">
-          <i class="fa-solid fa-user-graduate text-emeraldOdoo-light"></i>
-          <span id="headerStudentName" class="font-medium truncate max-w-[180px]">Alumno/a</span>
-        </div>
-        <div id="timerBadge" class="hidden flex items-center gap-2 bg-navy-dark px-3 py-1.5 rounded-lg border border-emeraldOdoo/40 font-mono font-semibold text-emeraldOdoo-light">
-          <i class="fa-regular fa-clock"></i>
-          <span id="timerDisplay">20:00</span>
-        </div>
-      </div>
+      <div class="timer-box" id="timer">Tiempo: 20:00</div>
     </div>
   </header>
 
-  <!-- Contenedor principal -->
-  <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
-
-    <!-- ==================== VISTA 1: PANTALLA DE INICIO ==================== -->
-    <section id="startScreen" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-      <div class="bg-gradient-to-r from-navy to-navy-light p-6 sm:p-10 text-white">
-        <span class="inline-block px-3 py-1 rounded-full bg-emeraldOdoo/20 border border-emeraldOdoo-light/40 text-emeraldOdoo-light text-xs font-bold uppercase tracking-wider mb-3">
-          Prueba de Conocimientos · 15 Preguntas
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold mb-3">Contabilidad en Odoo: De la factura al balance</h2>
-        <p class="text-slate-200 text-sm sm:text-base max-w-2xl leading-relaxed">
-          Comprueba tu dominio sobre la configuración inicial, el Plan General de Contabilidad, los diarios, el ciclo de facturación, la conciliación bancaria y los informes financieros en Odoo.
-        </p>
-      </div>
-
-      <div class="p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Formulario de identificación -->
-        <div class="lg:col-span-7 space-y-5">
-          <h3 class="text-lg font-bold text-navy border-b border-slate-100 pb-2">
-            1. Identificación del alumno/a
-          </h3>
-
-          <div>
-            <label for="studentName" class="block text-sm font-semibold text-slate-700 mb-1.5">
-              Nombre y apellidos <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="studentName"
-              placeholder="Ej. Laura Martínez Gómez"
-              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emeraldOdoo focus:border-emeraldOdoo text-slate-800 transition"
-            />
-            <p id="nameError" class="hidden text-xs text-red-600 font-medium mt-1">
-              <i class="fa-solid fa-circle-exclamation mr-1"></i>Por favor, introduce tu nombre completo para generar el informe final.
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label for="studentId" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                DNI / NIE / Código (opcional)
-              </label>
-              <input
-                type="text"
-                id="studentId"
-                placeholder="Ej. 12345678Z"
-                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emeraldOdoo focus:border-emeraldOdoo text-slate-800 transition"
-              />
-            </div>
-            <div>
-              <label for="studentGroup" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                Empresa / Grupo (opcional)
-              </label>
-              <input
-                type="text"
-                id="studentGroup"
-                placeholder="Ej. Distribuciones López, S.L."
-                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emeraldOdoo focus:border-emeraldOdoo text-slate-800 transition"
-              />
-            </div>
-          </div>
-
-          <!-- Opciones de la prueba -->
-          <div class="pt-2 space-y-3">
-            <h3 class="text-sm font-bold text-navy uppercase tracking-wider">Modalidad de evaluación</h3>
-            <label class="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slateBg cursor-pointer hover:border-emeraldOdoo transition">
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-stopwatch text-navy text-lg"></i>
-                <div>
-                  <span class="block text-sm font-semibold text-slate-800">Activar temporizador (20 minutos)</span>
-                  <span class="block text-xs text-slate-500">Simula condiciones reales de examen con tiempo controlado</span>
-                </div>
-              </div>
-              <input type="checkbox" id="enableTimer" class="w-5 h-5 accent-emeraldOdoo rounded cursor-pointer" />
-            </label>
-
-            <label class="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slateBg cursor-pointer hover:border-emeraldOdoo transition">
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-lightbulb text-emeraldOdoo text-lg"></i>
-                <div>
-                  <span class="block text-sm font-semibold text-slate-800">Feedback didáctico inmediato</span>
-                  <span class="block text-xs text-slate-500">Muestra la explicación técnica tras responder cada pregunta</span>
-                </div>
-              </div>
-              <input type="checkbox" id="instantFeedback" checked class="w-5 h-5 accent-emeraldOdoo rounded cursor-pointer" />
-            </label>
-          </div>
-
-          <button
-            id="startBtn"
-            type="button"
-            class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-emeraldOdoo hover:bg-emeraldOdoo-dark text-white font-bold text-base shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <span>Comenzar evaluación</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
+  <main class="container">
+    <section class="card no-print">
+      <strong>Datos del participante</strong>
+      <p style="margin:6px 0 0; color:var(--muted); font-size:14px;">
+        Completa el test de 15 preguntas sobre el módulo de Contabilidad en Odoo. El orden de las preguntas y de las opciones se mezcla en cada intento.
+      </p>
+      <div class="student-grid">
+        <div>
+          <label for="studentName">Nombre y apellidos</label>
+          <input type="text" id="studentName" placeholder="Ej. Laura García Pérez" />
         </div>
-
-        <!-- Resumen de unidades evaluadas -->
-        <div class="lg:col-span-5 bg-slateBg rounded-2xl p-6 border border-slate-200 flex flex-col justify-between space-y-5">
-          <div>
-            <h3 class="text-base font-bold text-navy mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-layer-group text-emeraldOdoo"></i>
-              Estructura del examen
-            </h3>
-            <div class="space-y-3">
-              <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-                <div class="flex justify-between items-center mb-1">
-                  <span class="text-xs font-bold text-emeraldOdoo uppercase">Unidad 1 · 5 preguntas</span>
-                  <span class="text-xs text-slate-400">33,3 %</span>
-                </div>
-                <p class="text-sm font-bold text-navy">Introducción, PGC y Diarios</p>
-                <p class="text-xs text-slate-500 mt-0.5">Panel de Contabilidad, configuración inicial, cuentas 430/400/572/700 y diarios.</p>
-              </div>
-
-              <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-                <div class="flex justify-between items-center mb-1">
-                  <span class="text-xs font-bold text-emeraldOdoo uppercase">Unidad 2 · 6 preguntas</span>
-                  <span class="text-xs text-slate-400">40,0 %</span>
-                </div>
-                <p class="text-sm font-bold text-navy">Operaciones y Conciliación</p>
-                <p class="text-xs text-slate-500 mt-0.5">Estados de factura, rectificativas, cobros parciales, asientos IVA 21 % y conciliación.</p>
-              </div>
-
-              <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-                <div class="flex justify-between items-center mb-1">
-                  <span class="text-xs font-bold text-emeraldOdoo uppercase">Unidad 3 · 4 preguntas</span>
-                  <span class="text-xs text-slate-400">26,7 %</span>
-                </div>
-                <p class="text-sm font-bold text-navy">Informes y Control Contable</p>
-                <p class="text-xs text-slate-500 mt-0.5">Libro Mayor, Balance de Situación, PyG, impuestos AEAT y cierre.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-navy/5 border border-navy/10 rounded-xl p-3.5 text-xs text-slate-600 flex items-start gap-2.5">
-            <i class="fa-solid fa-file-pdf text-navy text-base mt-0.5"></i>
-            <span>
-              Al finalizar obtendrás tu calificación sobre 10 (<strong>Apto ≥ 5,0</strong>) y podrás descargar tu <strong>informe certificado en PDF</strong>.
-            </span>
-          </div>
+        <div>
+          <label for="studentId">DNI / NIE / Código</label>
+          <input type="text" id="studentId" placeholder="Ej. 12345678A" />
+        </div>
+        <div>
+          <label for="groupName">Grupo / Edición</label>
+          <input type="text" id="groupName" placeholder="Ej. Formación General" />
         </div>
       </div>
     </section>
 
-    <!-- ==================== VISTA 2: CUESTIONARIO INTERACTIVO ==================== -->
-    <section id="quizScreen" class="hidden space-y-6">
-      <!-- Barra de progreso y navegación rápida -->
-      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div class="flex items-center gap-2">
-            <span id="unitBadge" class="px-3 py-1 rounded-lg bg-emeraldOdoo-soft text-emeraldOdoo-dark text-xs font-bold uppercase tracking-wide">
-              Unidad 1
-            </span>
-            <span id="questionCounter" class="text-sm font-bold text-navy">
-              Pregunta 1 de 15
-            </span>
+    <form id="quizForm"></form>
+
+    <div class="actions no-print">
+      <button type="button" class="btn-primary" id="submitBtn">Evaluar y generar informe</button>
+      <button type="button" class="btn-secondary" id="resetBtn">Reiniciar con nuevo orden</button>
+    </div>
+
+    <section id="result-panel" class="card">
+      <div id="pdf-content">
+        <div class="cert-banner">
+          <div style="font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#A7F3D0; font-weight:700;">
+            Informe oficial de evaluación · Formación Odoo
           </div>
-          <span id="answeredCounter" class="text-xs font-semibold text-slate-500">
-            0 de 15 respondidas
-          </span>
+          <h2 style="margin:6px 0 4px; font-size:20px;">Módulo 1: Contabilidad en Odoo</h2>
+          <div style="font-size:13px; opacity:0.9;">De la factura al balance · Evaluación teórica y práctica</div>
+          <div id="statusBadge" class="status-pill"></div>
         </div>
 
-        <!-- Barra de progreso visual -->
-        <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-          <div id="progressBar" class="h-full bg-emeraldOdoo transition-all duration-300 rounded-full" style="width: 6.66%"></div>
+        <div class="meta-grid">
+          <div class="meta-box"><div class="k">Alumno/a</div><div class="v" id="outName">—</div></div>
+          <div class="meta-box"><div class="k">Identificador</div><div class="v" id="outId">—</div></div>
+          <div class="meta-box"><div class="k">Grupo</div><div class="v" id="outGroup">—</div></div>
+          <div class="meta-box"><div class="k">Calificación</div><div class="v" id="outScore">—</div></div>
+          <div class="meta-box"><div class="k">Fecha y hora</div><div class="v" id="outDate">—</div></div>
         </div>
 
-        <!-- Indicadores numéricos de preguntas -->
-        <div id="questionDots" class="flex flex-wrap gap-1.5 mt-4"></div>
+        <h3 style="margin:0 0 10px; color:var(--navy); font-size:15px;">Desglose por unidad</h3>
+        <table class="breakdown">
+          <thead>
+            <tr>
+              <th>Unidad</th>
+              <th>Aciertos</th>
+              <th>Porcentaje</th>
+            </tr>
+          </thead>
+          <tbody id="unitTableBody"></tbody>
+        </table>
+
+        <h3 style="margin:14px 0 8px; color:var(--navy); font-size:15px;">Detalle de respuestas</h3>
+        <div id="reviewList"></div>
       </div>
 
-      <!-- Tarjeta de pregunta -->
-      <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
-        <h2 id="questionText" class="text-lg sm:text-xl font-bold text-navy leading-snug mb-6">
-          Texto de la pregunta
-        </h2>
-
-        <!-- Opciones de respuesta -->
-        <div id="optionsContainer" class="space-y-3"></div>
-
-        <!-- Caja de explicación didáctica (modo feedback inmediato) -->
-        <div id="feedbackBox" class="hidden mt-6 p-4 sm:p-5 rounded-xl border text-sm leading-relaxed">
-          <div class="flex items-start gap-3">
-            <i id="feedbackIcon" class="fa-solid fa-circle-info text-lg mt-0.5"></i>
-            <div>
-              <p id="feedbackTitle" class="font-bold mb-1">Explicación</p>
-              <p id="feedbackText" class="text-slate-700"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Botones de navegación -->
-        <div class="mt-8 pt-5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-          <button
-            id="prevBtn"
-            type="button"
-            class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-2 cursor-pointer"
-          >
-            <i class="fa-solid fa-chevron-left"></i>
-            <span>Anterior</span>
-          </button>
-
-          <div class="flex items-center gap-3">
-            <button
-              id="nextBtn"
-              type="button"
-              class="px-6 py-2.5 rounded-xl bg-navy hover:bg-navy-light text-white font-semibold text-sm transition flex items-center gap-2 cursor-pointer"
-            >
-              <span>Siguiente</span>
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
-
-            <button
-              id="finishBtn"
-              type="button"
-              class="hidden px-6 py-2.5 rounded-xl bg-emeraldOdoo hover:bg-emeraldOdoo-dark text-white font-bold text-sm shadow-sm transition flex items-center gap-2 cursor-pointer"
-            >
-              <i class="fa-solid fa-check-double"></i>
-              <span>Finalizar y ver resultados</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== VISTA 3: RESULTADOS E INFORME PDF ==================== -->
-    <section id="resultScreen" class="hidden space-y-6">
-      <!-- Barra de acciones superior (no se imprime en PDF) -->
-      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4 no-print">
-        <div class="flex items-center gap-2.5 text-sm text-slate-600">
-          <i class="fa-solid fa-award text-emeraldOdoo text-xl"></i>
-          <span>Evaluación completada. Descarga tu certificado o revisa las respuestas abajo.</span>
-        </div>
-        <div class="flex flex-wrap items-center gap-3">
-          <button
-            id="downloadPdfBtn"
-            type="button"
-            class="px-5 py-2.5 rounded-xl bg-emeraldOdoo hover:bg-emeraldOdoo-dark text-white font-bold text-sm shadow-sm transition flex items-center gap-2 cursor-pointer"
-          >
-            <i class="fa-solid fa-file-arrow-down"></i>
-            <span>Descargar informe PDF</span>
-          </button>
-          <button
-            id="printBtn"
-            type="button"
-            class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition flex items-center gap-2 cursor-pointer"
-          >
-            <i class="fa-solid fa-print"></i>
-            <span>Imprimir</span>
-          </button>
-          <button
-            id="retryBtn"
-            type="button"
-            class="px-4 py-2.5 rounded-xl border border-navy text-navy font-semibold text-sm hover:bg-navy/5 transition flex items-center gap-2 cursor-pointer"
-          >
-            <i class="fa-solid fa-rotate-right"></i>
-            <span>Repetir test</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mensaje de estado de descarga PDF -->
-      <div id="pdfAlert" class="hidden p-3.5 rounded-xl bg-emeraldOdoo-soft border border-emeraldOdoo text-emeraldOdoo-dark text-sm font-medium no-print"></div>
-
-      <!-- ÁREA EXPORTABLE A PDF -->
-      <div id="pdfReportArea" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden print-container">
-        <!-- Encabezado del certificado -->
-        <div class="bg-navy text-white p-6 sm:p-8 border-b-4 border-emeraldOdoo">
-          <div class="flex flex-wrap justify-between items-start gap-4">
-            <div>
-              <p class="text-xs uppercase tracking-widest text-emeraldOdoo-light font-bold mb-1">
-                Informe Oficial de Evaluación · Formación Odoo
-              </p>
-              <h2 class="text-2xl sm:text-3xl font-extrabold">Módulo 1: Contabilidad en Odoo</h2>
-              <p class="text-slate-300 text-sm mt-1">De la factura al balance · Evaluación teórica y práctica</p>
-            </div>
-            <div id="statusStamp" class="px-4 py-2 rounded-xl font-display font-extrabold text-base uppercase tracking-wider border-2">
-              APTO
-            </div>
-          </div>
-
-          <!-- Datos del alumno en el informe -->
-          <div class="mt-6 pt-5 border-t border-white/15 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span class="block text-xs text-slate-300">Alumno/a</span>
-              <strong id="reportStudentName" class="text-white font-semibold">—</strong>
-            </div>
-            <div>
-              <span class="block text-xs text-slate-300">Identificador / DNI</span>
-              <strong id="reportStudentId" class="text-white font-semibold">—</strong>
-            </div>
-            <div>
-              <span class="block text-xs text-slate-300">Empresa / Grupo</span>
-              <strong id="reportStudentGroup" class="text-white font-semibold">—</strong>
-            </div>
-            <div>
-              <span class="block text-xs text-slate-300">Fecha y hora</span>
-              <strong id="reportDate" class="text-white font-semibold">—</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Resumen de calificaciones -->
-        <div class="p-6 sm:p-8 space-y-8">
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="bg-slateBg p-4 rounded-xl border border-slate-200 text-center">
-              <span class="block text-xs font-semibold text-slate-500 uppercase">Nota Final</span>
-              <span id="finalGrade" class="block text-3xl font-display font-extrabold text-navy mt-1">0,00</span>
-              <span class="text-xs text-slate-400">sobre 10,00</span>
-            </div>
-            <div class="bg-slateBg p-4 rounded-xl border border-slate-200 text-center">
-              <span class="block text-xs font-semibold text-slate-500 uppercase">Porcentaje</span>
-              <span id="finalPercent" class="block text-3xl font-display font-extrabold text-emeraldOdoo mt-1">0 %</span>
-              <span class="text-xs text-slate-400">de aciertos</span>
-            </div>
-            <div class="bg-slateBg p-4 rounded-xl border border-slate-200 text-center">
-              <span class="block text-xs font-semibold text-slate-500 uppercase">Aciertos</span>
-              <span id="correctCount" class="block text-3xl font-display font-extrabold text-emerald-700 mt-1">0</span>
-              <span class="text-xs text-slate-400">de 15 preguntas</span>
-            </div>
-            <div class="bg-slateBg p-4 rounded-xl border border-slate-200 text-center">
-              <span class="block text-xs font-semibold text-slate-500 uppercase">Fallos / Sin resp.</span>
-              <span id="wrongCount" class="block text-3xl font-display font-extrabold text-rose-600 mt-1">0</span>
-              <span class="text-xs text-slate-400">preguntas a reforzar</span>
-            </div>
-          </div>
-
-          <!-- Desglose por unidad -->
-          <div>
-            <h3 class="text-base font-bold text-navy mb-3 flex items-center gap-2">
-              <i class="fa-solid fa-chart-pie text-emeraldOdoo"></i>
-              Desglose de rendimiento por unidad didáctica
-            </h3>
-            <div id="unitBreakdownContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-          </div>
-
-          <!-- Revisión detallada pregunta por pregunta -->
-          <div>
-            <h3 class="text-base font-bold text-navy mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-list-check text-emeraldOdoo"></i>
-              Revisión detallada de respuestas y justificación técnica
-            </h3>
-            <div id="reviewContainer" class="space-y-4"></div>
-          </div>
-        </div>
+      <div class="actions no-print">
+        <button type="button" class="btn-navy" id="downloadPdfBtn">Descargar informe PDF</button>
+        <button type="button" class="btn-secondary" onclick="window.print()">Imprimir</button>
       </div>
     </section>
   </main>
 
-  <!-- Pie de página -->
-  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 no-print">
-    Formación Odoo · Módulo 1: Contabilidad en Odoo · Material interactivo de evaluación
-  </footer>
-
-  <!-- Modal personalizado de confirmación (sustituye a confirm/alert) -->
-  <div id="confirmModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
-      <div class="flex items-center gap-3 text-amber-600 mb-3">
-        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
-        <h3 class="text-lg font-bold text-navy">Preguntas sin responder</h3>
-      </div>
-      <p id="confirmModalText" class="text-sm text-slate-600 leading-relaxed mb-6">
-        Aún tienes preguntas sin responder. Las preguntas en blanco contarán como 0 puntos. ¿Deseas finalizar la evaluación ahora?
-      </p>
-      <div class="flex justify-end gap-3">
-        <button
-          id="cancelModalBtn"
-          type="button"
-          class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50 cursor-pointer"
-        >
-          Volver al test
-        </button>
-        <button
-          id="confirmModalBtn"
-          type="button"
-          class="px-5 py-2 rounded-xl bg-emeraldOdoo hover:bg-emeraldOdoo-dark text-white font-bold text-sm cursor-pointer"
-        >
-          Finalizar igualmente
-        </button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // =========================================================================
-    // BANCO DE 15 PREGUNTAS · MÓDULO 1: CONTABILIDAD EN ODOO
-    // =========================================================================
     const QUESTIONS = [
-      // --- UNIDAD 1: Introducción, Configuración, PGC y Diarios (5 preguntas) ---
       {
-        id: 1,
-        unit: "Unidad 1",
-        unitTitle: "Introducción, PGC y Diarios",
-        question: "¿Cuál es la función principal del tablero (Dashboard) inicial al entrar en la aplicación de Contabilidad en Odoo?",
+        id: "U1-1",
+        unit: "Unidad 1 · Introducción al módulo",
+        q: "¿Qué muestra el tablero principal de Contabilidad al entrar desde el menú de aplicaciones de Odoo?",
         options: [
-          "Mostrar únicamente el Balance de Situación anual cerrado y los modelos fiscales presentados.",
-          "Resumir por diarios las tareas urgentes: facturas por validar o cobrar, pagos pendientes y extractos bancarios por conciliar.",
-          "Configurar exclusivamente los contratos laborales y las estructuras salariales de la empresa.",
-          "Eliminar automáticamente las facturas vencidas que superen los 30 días sin cobro."
-        ],
-        correct: 1,
-        explanation: "El tablero de Contabilidad actúa como centro de control diario, mostrando tarjetas por diario con accesos directos a facturas pendientes, cobros/pagos y extractos bancarios por conciliar."
-      },
-      {
-        id: 2,
-        unit: "Unidad 1",
-        unitTitle: "Introducción, PGC y Diarios",
-        question: "Antes de emitir la primera factura en Odoo, ¿por qué es crítico revisar la configuración de secuencias y numeración?",
-        options: [
-          "Porque Odoo solo permite emitir un máximo de 100 facturas por ejercicio fiscal.",
-          "Porque la normativa fiscal exige correlatividad sin saltos injustificados y no deben alterarse una vez iniciada la facturación.",
-          "Porque la numeración determina automáticamente el tipo de IVA (21 %, 10 % o 4 %) de cada cliente.",
-          "Porque sin secuencia personalizada no se puede abrir el informe del Libro Mayor."
-        ],
-        correct: 1,
-        explanation: "Entre los cinco datos básicos de configuración (empresa/NIF, moneda/ejercicio, bancos, impuestos por defecto y numeración), las secuencias de facturación deben revisarse antes de operar para garantizar correlatividad legal."
-      },
-      {
-        id: 3,
-        unit: "Unidad 1",
-        unitTitle: "Introducción, PGC y Diarios",
-        question: "En el Plan General de Contabilidad (PGC) español cargado en Odoo, ¿qué representan respectivamente las cuentas 430, 400, 572 y 700?",
-        options: [
-          "430 Proveedores, 400 Clientes, 572 Ventas de mercaderías y 700 Bancos.",
-          "430 Clientes, 400 Proveedores, 572 Bancos e instituciones de crédito y 700 Ventas de mercaderías.",
-          "430 Sueldos y salarios, 400 Seguridad Social, 572 IVA repercutido y 700 Caja.",
-          "430 Capital social, 400 Inmovilizado, 572 Hacienda acreedora y 700 Compras."
-        ],
-        correct: 1,
-        explanation: "Según el PGC español en Odoo: 430 recoge derechos de cobro con Clientes, 400 obligaciones con Proveedores, 572 saldos en Bancos c/c y 700 ingresos por Ventas de mercaderías."
-      },
-      {
-        id: 4,
-        unit: "Unidad 1",
-        unitTitle: "Introducción, PGC y Diarios",
-        question: "¿Qué cinco tipos de diarios contables habituales estructuran el registro de operaciones en Odoo?",
-        options: [
-          "Nóminas, Contratos, Ausencias, Proyectos e Inventario.",
-          "Ventas, Compras, Banco, Efectivo y Operaciones varias.",
-          "Activo, Pasivo, Patrimonio Neto, Ingresos y Gastos.",
-          "IVA Repercutido, IVA Soportado, IRPF, Amortizaciones y Cierre."
-        ],
-        correct: 1,
-        explanation: "Odoo organiza la entrada de apuntes en cinco diarios principales: Ventas (facturas de cliente), Compras (facturas de proveedor), Banco (extractos), Efectivo (caja) y Operaciones varias (asientos manuales, nóminas y ajustes)."
-      },
-      {
-        id: 5,
-        unit: "Unidad 1",
-        unitTitle: "Introducción, PGC y Diarios",
-        question: "¿Qué utilidad ofrece la barra de búsqueda superior en los listados de Contabilidad (facturas, apuntes o pagos)?",
-        options: [
-          "Permite combinar filtros (como facturas vencidas o no pagadas) y guardarlos en 'Favoritos' para reutilizarlos con un clic.",
-          "Sirve únicamente para buscar contactos por su número de teléfono.",
-          "Publica automáticamente todos los asientos que estén en estado borrador.",
-          "Modifica el ejercicio fiscal activo sin necesidad de entrar en Ajustes."
+          "Un resumen operativo por diario con facturas pendientes, extractos por conciliar y accesos rápidos",
+          "Únicamente los recibos salariales y contratos del mes en curso",
+          "El código fuente de cada asiento contable en formato XML",
+          "El catálogo de productos sin impuestos ni fechas de vencimiento"
         ],
         correct: 0,
-        explanation: "La barra de búsqueda de Odoo permite filtrar y agrupar cualquier listado por múltiples criterios y guardar las vistas frecuentes en Favoritos para agilizar el trabajo diario."
-      },
-
-      // --- UNIDAD 2: Facturas, Cobros/Pagos, Asientos y Conciliación (6 preguntas) ---
-      {
-        id: 6,
-        unit: "Unidad 2",
-        unitTitle: "Operaciones y Conciliación",
-        question: "¿Cuál es el recorrido correcto de estados de una factura de cliente desde su creación hasta su cobro completo en Odoo?",
-        options: [
-          "Publicada → Borrador → Conciliada.",
-          "Borrador → Publicada (abierta) → Pagada.",
-          "En espera → En curso → Cerrada.",
-          "Presupuesto → Validada → Archivada."
-        ],
-        correct: 1,
-        explanation: "Toda factura nace en 'Borrador' (editable sin efecto contable), pasa a 'Publicada' al validarse (generando número definitivo y asiento contable) y llega a 'Pagada' al saldarse el cobro."
+        explain: "El tablero de Contabilidad resume lo urgente por diario (facturas por validar/cobrar, banco por conciliar y tareas) para operar cada día."
       },
       {
-        id: 7,
-        unit: "Unidad 2",
-        unitTitle: "Operaciones y Conciliación",
-        question: "Si una factura de cliente ya está 'Publicada' y detectamos un error en el importe o una devolución de mercancía, ¿cómo debemos proceder en Odoo?",
+        id: "U1-2",
+        unit: "Unidad 1 · Introducción al módulo",
+        q: "¿Qué debe revisarse con especial cuidado antes de emitir la primera factura de cliente?",
         options: [
-          "Borrar directamente la factura publicada para que desaparezca del sistema.",
-          "Emitir una factura rectificativa (abono) desde la propia factura publicada para dejar rastro contable y fiscal.",
-          "Cambiar el NIF del cliente por uno ficticio y volver a imprimir el PDF.",
-          "Ignorarla y crear un asiento manual solo en la cuenta de bancos."
+          "Las secuencias y prefijos de numeración, ya que tienen exigencias legales y no deben cambiarse a la ligera",
+          "El color de fondo del botón de imprimir PDF",
+          "El horario de vacaciones de los empleados en RR. HH.",
+          "La contraseña del correo electrónico saliente"
         ],
-        correct: 1,
-        explanation: "Por integridad contable y normativa de facturación, una factura publicada se corrige emitiendo una factura rectificativa que genera el asiento inverso correspondiente."
+        correct: 0,
+        explain: "La numeración de facturas tiene exigencias legales; configurarla bien desde el inicio evita rectificativas y saltos indebidos."
       },
       {
-        id: 8,
-        unit: "Unidad 2",
-        unitTitle: "Operaciones y Conciliación",
-        question: "Un cliente tiene una factura publicada por 1.210,00 € y realiza un primer pago parcial de 500,00 €. ¿Qué ocurre en Odoo al registrar ese cobro?",
+        id: "U1-3",
+        unit: "Unidad 1 · Introducción al módulo",
+        q: "¿Qué aporta la localización española en el Plan de cuentas de Odoo?",
         options: [
-          "Odoo rechaza el pago porque solo admite cobros por el 100 % del importe.",
-          "La factura pasa al estado 'Parcialmente pagada' y mantiene visible un importe pendiente de 710,00 €.",
-          "La factura se marca como 'Pagada' y los 710,00 € restantes se cancelan automáticamente como pérdida.",
-          "La factura vuelve al estado 'Borrador' hasta recibir el segundo pago."
+          "Carga el Plan General de Contabilidad para crear o activar las subcuentas necesarias (como 430, 400, 572 o 700)",
+          "Elimina todos los diarios contables y obliga a usar un único diario",
+          "Convierte automáticamente todas las facturas a dólares estadounidenses",
+          "Sustituye los asientos contables por hojas de cálculo externas"
         ],
-        correct: 1,
-        explanation: "Odoo admite cobros y pagos parciales: descuenta el importe cobrado (500,00 €), cambia la etiqueta a 'Parcialmente pagada' y conserva el saldo vivo (710,00 €) para futuras reclamaciones o cobros."
+        correct: 0,
+        explain: "Con la localización española dispones del PGC para trabajar y añadir subcuentas específicas de clientes, proveedores, bancos, ventas o gastos."
       },
       {
-        id: 9,
-        unit: "Unidad 2",
-        unitTitle: "Operaciones y Conciliación",
-        question: "Al validar una factura de venta de 1.000,00 € de base imponible + 21 % de IVA (total 1.210,00 €), ¿qué asiento contable genera Odoo automáticamente?",
+        id: "U1-4",
+        unit: "Unidad 1 · Introducción al módulo",
+        q: "¿En qué diario contable se anotan habitualmente los asientos manuales, regularizaciones o ajustes?",
         options: [
-          "Debe: 7000 Ventas (1.000 €) y 4770 IVA repercutido (210 €) / Haber: 4300 Clientes (1.210 €).",
-          "Debe: 4300 Clientes (1.210,00 €) / Haber: 7000 Ventas (1.000,00 €) y 4770 IVA repercutido (210,00 €).",
-          "Debe: 5720 Bancos (1.210,00 €) / Haber: 4000 Proveedores (1.210,00 €).",
-          "Debe: 4300 Clientes (1.000,00 €) / Haber: 7000 Ventas (1.000,00 €), sin anotar el IVA hasta el cobro."
+          "En el diario de Operaciones varias",
+          "En el diario de Ventas",
+          "En el diario de Compras",
+          "En el diario de Banco"
         ],
-        correct: 1,
-        explanation: "En una venta, el derecho de cobro frente al cliente va al Debe (4300 por 1.210,00 €) y los ingresos junto con el IVA devengado van al Haber (7000 por 1.000,00 € y 4770 por 210,00 €), cumpliendo Debe = Haber."
+        correct: 0,
+        explain: "Las facturas emitidas van a Ventas, las recibidas a Compras, los extractos a Banco y los ajustes o asientos manuales a Operaciones varias."
       },
       {
-        id: 10,
-        unit: "Unidad 2",
-        unitTitle: "Operaciones y Conciliación",
-        question: "¿Cuál es la regla de oro que verifica Odoo antes de permitir publicar cualquier asiento contable (automático o manual)?",
+        id: "U1-5",
+        unit: "Unidad 1 · Introducción al módulo",
+        q: "¿Dónde se configuran los datos fiscales de la empresa, moneda, ejercicio fiscal e impuestos por defecto?",
         options: [
-          "Que el asiento contenga como máximo dos líneas contables.",
-          "Que la suma de los importes del Debe sea exactamente igual a la suma de los importes del Haber.",
-          "Que la fecha del asiento sea siempre el último día del trimestre.",
-          "Que todas las líneas pertenezcan al diario de Efectivo."
+          "En Configuración → Ajustes del módulo (y datos de la compañía)",
+          "En el menú de Asistencias de empleados",
+          "En la pestaña de Vacaciones aprobadas",
+          "En el pie de página del informe de inventario"
         ],
-        correct: 1,
-        explanation: "El principio de partida doble exige equilibrio contable: Total Debe = Total Haber. Si existe un descuadre de un solo céntimo, Odoo impide publicar el asiento."
+        correct: 0,
+        explain: "Los parámetros base de empresa, moneda, ejercicio fiscal e impuestos por defecto se revisan en Configuración → Ajustes."
       },
       {
-        id: 11,
-        unit: "Unidad 2",
-        unitTitle: "Operaciones y Conciliación",
-        question: "¿Cuál es la secuencia lógica de los cuatro pasos de la conciliación bancaria en Odoo?",
+        id: "U2-1",
+        unit: "Unidad 2 · Operaciones contables",
+        q: "¿Qué ocurre al pasar una factura de cliente de Borrador a Publicada?",
         options: [
-          "1. Cerrar ejercicio → 2. Borrar facturas → 3. Crear diario → 4. Imprimir balance.",
-          "1. Traer extracto bancario → 2. Revisar propuestas de emparejamiento → 3. Asignar contrapartidas (ej. comisiones) → 4. Verificar saldo cuadrado.",
-          "1. Emitir nóminas → 2. Calcular IRPF → 3. Validar contrato → 4. Enviar por correo.",
-          "1. Exportar Excel → 2. Cambiar moneda → 3. Anular pagos → 4. Archivar banco."
+          "Odoo asigna número definitivo y genera automáticamente el asiento contable",
+          "Se borra la factura del sistema y se envía a la papelera",
+          "Se anula el IVA de todas las líneas automáticamente",
+          "Se bloquea el acceso al menú de Informes"
         ],
-        correct: 1,
-        explanation: "La conciliación consiste en importar o sincronizar los movimientos del banco, aceptar los cruces sugeridos con facturas/pagos, imputar gastos directos sin factura (como comisiones) y comprobar que el saldo contable coincide con el real."
-      },
-
-      // --- UNIDAD 3: Informes y Control Contable (4 preguntas) ---
-      {
-        id: 12,
-        unit: "Unidad 3",
-        unitTitle: "Informes y Control Contable",
-        question: "¿Qué diferencia fundamental existe entre el Balance de Situación y la Cuenta de Pérdidas y Ganancias (PyG) en Odoo?",
-        options: [
-          "No existe diferencia; ambos muestran exactamente las mismas cuentas de ingresos y gastos.",
-          "El Balance refleja la situación patrimonial (Activo = Patrimonio Neto + Pasivo) a una fecha concreta, mientras que la PyG mide Ingresos − Gastos en un rango de fechas.",
-          "El Balance solo se usa para empresas industriales y la PyG para empresas de servicios.",
-          "La PyG muestra las deudas con proveedores y el Balance únicamente los impuestos trimestrales."
-        ],
-        correct: 1,
-        explanation: "El Balance de Situación es una fotografía estática del patrimonio a una fecha de corte, mientras que la Cuenta de Pérdidas y Ganancias refleja el rendimiento económico acumulado entre dos fechas."
+        correct: 0,
+        explain: "En Borrador puedes editar sin efecto contable; al Publicar se asigna numeración definitiva y nace el asiento contable."
       },
       {
-        id: 13,
-        unit: "Unidad 3",
-        unitTitle: "Informes y Control Contable",
-        question: "Si necesitas auditar todos los movimientos detallados de un cliente concreto (saldo inicial, cada factura, cada cobro y saldo final) y saltar al documento origen, ¿qué informe debes abrir?",
+        id: "U2-2",
+        unit: "Unidad 2 · Operaciones contables",
+        q: "¿Qué estado toma una factura de cliente si registras un cobro por un importe inferior al total?",
         options: [
-          "El Informe de Ausencias.",
-          "El Libro Mayor (General Ledger).",
-          "El Configurador de Secuencias.",
-          "El Lote de Nóminas."
+          "Parcialmente pagada, manteniendo el importe pendiente hasta completar el cobro",
+          "Cancelada sin posibilidad de cobrar el resto",
+          "Borrador con asiento anulado",
+          "Rectificada por el importe total"
         ],
-        correct: 1,
-        explanation: "El Libro Mayor muestra el detalle cronológico de todos los apuntes cuenta por cuenta en el periodo seleccionado y permite navegar directamente al asiento y a la factura origen."
+        correct: 0,
+        explain: "Un cobro parcial deja la factura en estado parcialmente pagada con su saldo pendiente visible hasta que se completa."
       },
       {
-        id: 14,
-        unit: "Unidad 3",
-        unitTitle: "Informes y Control Contable",
-        question: "En la gestión fiscal con la localización española de Odoo, ¿cómo se alimenta el Informe de Impuestos para preparar las declaraciones ante la AEAT?",
+        id: "U2-3",
+        unit: "Unidad 2 · Operaciones contables",
+        q: "En una venta de 1.000,00 € + 21 % de IVA (1.210,00 € total), ¿cuál es el esquema básico del asiento al validar?",
         options: [
-          "Tecleando manualmente cada factura en una hoja de cálculo externa antes de abrir Odoo.",
-          "Automáticamente a partir de los impuestos aplicados en las facturas, agrupando bases y cuotas por casillas fiscales desplegables.",
-          "Únicamente mediante los asientos de cierre del 31 de diciembre.",
-          "Sumando los saldos de las cuentas del grupo 57 (Tesorería)."
+          "Debe: 1.210,00 € en Clientes (4300) · Haber: 1.000,00 € en Ventas (7000) y 210,00 € en IVA repercutido (4770)",
+          "Debe: 1.000,00 € en IVA repercutido · Haber: 1.210,00 € en Clientes",
+          "Debe: 210,00 € en Ventas · Haber: 1.210,00 € en Bancos",
+          "Debe: 1.210,00 € en Proveedores · Haber: 1.210,00 € en Compras"
         ],
-        correct: 1,
-        explanation: "Cada impuesto configurado en Odoo lleva asociadas etiquetas fiscales; al seleccionar el impuesto correcto en ventas y compras, el Informe de Impuestos consolida bases y cuotas por casilla y permite auditar las facturas que las componen."
+        correct: 0,
+        explain: "El cliente adeuda el total (1.210,00 € al Debe) y se anotan al Haber la venta (1.000,00 €) y el IVA repercutido (210,00 €)."
       },
       {
-        id: 15,
-        unit: "Unidad 3",
-        unitTitle: "Informes y Control Contable",
-        question: "En el escenario práctico 'Distribuciones López, S.L.', si emites una factura de venta de 1.500 € + 21 % IVA y registras una factura de compra de 500 € + 21 % IVA, ¿cuál será el resultado operativo en la Cuenta de Pérdidas y Ganancias?",
+        id: "U2-4",
+        unit: "Unidad 2 · Operaciones contables",
+        q: "¿Cuál es la regla de oro de todo asiento contable en Odoo?",
         options: [
-          "+1.210,00 € de beneficio, porque el IVA se suma como ingreso.",
-          "+1.000,00 € de beneficio (1.500,00 € de ingresos menos 500,00 € de gastos, ya que el IVA no es ingreso ni gasto).",
-          "+2.000,00 € de beneficio, al sumarse ventas y compras.",
-          "0,00 € hasta que se cierre el ejercicio fiscal."
+          "La suma del Debe debe ser igual a la suma del Haber para poder publicarlo",
+          "Solo puede tener dos líneas: una de ingreso y otra de banco",
+          "Debe crearse siempre a mano desde Operaciones varias",
+          "No puede incluir cuentas de impuestos"
         ],
-        correct: 1,
-        explanation: "La Cuenta de Pérdidas y Ganancias recoge bases imponibles de ingresos (1.500 €) menos gastos (500 €) = +1.000,00 € de resultado; el IVA repercutido (315 €) y soportado (105 €) se registra en cuentas de Hacienda (477/472)."
+        correct: 0,
+        explain: "Todo asiento contable exige partida doble: Debe igual a Haber; si está descuadrado, Odoo no permite publicarlo."
+      },
+      {
+        id: "U2-5",
+        unit: "Unidad 2 · Operaciones contables",
+        q: "¿En qué consiste la conciliación bancaria básica en Odoo?",
+        options: [
+          "Cruzar los movimientos del extracto bancario con los registros contables hasta cuadrar el saldo real del banco",
+          "Cambiar la fecha de todas las facturas emitidas al último día del año",
+          "Duplicar cada pago en el diario de Efectivo",
+          "Borrar las facturas vencidas de clientes"
+        ],
+        correct: 0,
+        explain: "Conciliar consiste en emparejar movimientos del extracto con facturas/pagos o asignar contrapartida para que el saldo cuadre con el banco."
+      },
+      {
+        id: "U3-1",
+        unit: "Unidad 3 · Informes y control contable",
+        q: "¿Qué informe usas para ver todos los movimientos de una cuenta concreta en un periodo y saltar al asiento origen?",
+        options: [
+          "El Libro mayor",
+          "El calendario de turnos de RR. HH.",
+          "La ficha de producto en borrador",
+          "El listado de ausencias pendientes"
+        ],
+        correct: 0,
+        explain: "El Libro mayor detalla todos los apuntes de cada cuenta en el rango de fechas y permite abrir el asiento y el documento origen."
+      },
+      {
+        id: "U3-2",
+        unit: "Unidad 3 · Informes y control contable",
+        q: "¿Qué ecuación cumple siempre el Balance de situación a una fecha determinada?",
+        options: [
+          "Activo = Patrimonio neto + Pasivo",
+          "Ingresos + Cobros = Impuestos pagados",
+          "Facturas emitidas = Extracto bancario",
+          "Gastos − Ventas = Activo corriente"
+        ],
+        correct: 0,
+        explain: "El Balance de situación muestra la fotografía patrimonial a una fecha donde Activo es igual a Patrimonio neto más Pasivo."
+      },
+      {
+        id: "U3-3",
+        unit: "Unidad 3 · Informes y control contable",
+        q: "¿Cómo se calcula el resultado del ejercicio en la Cuenta de pérdidas y ganancias?",
+        options: [
+          "Ingresos − Gastos en el periodo seleccionado",
+          "Saldo del banco − Salario neto de un empleado",
+          "Total de facturas en borrador + IVA soportado",
+          "Número de clientes × tipo de IVA"
+        ],
+        correct: 0,
+        explain: "La Cuenta de pérdidas y ganancias agrupa ingresos y gastos por naturaleza para mostrar el resultado del periodo elegido."
+      },
+      {
+        id: "U3-4",
+        unit: "Unidad 3 · Informes y control contable",
+        q: "¿Para qué sirve el Informe de impuestos tras registrar facturas con sus tipos impositivos?",
+        options: [
+          "Para revisar bases y cuotas por casilla en el periodo y preparar las declaraciones oficiales (como ante la AEAT)",
+          "Para modificar retroactivamente el salario base de los contratos",
+          "Para enviar correos automáticos de felicitación a los clientes",
+          "Para eliminar los diarios de Banco y Efectivo"
+        ],
+        correct: 0,
+        explain: "El Informe de impuestos consolida bases y cuotas según la configuración fiscal del periodo para verificarlas antes de declarar."
+      },
+      {
+        id: "U3-5",
+        unit: "Unidad 3 · Informes y control contable",
+        q: "En la práctica de Distribuciones López, S.L., ¿qué secuencia resume el ciclo contable completo?",
+        options: [
+          "Configurar datos base → facturar y cobrar/pagar → conciliar banco → revisar Mayor, Balance y PyG",
+          "Conciliar banco → borrar diario de Ventas → no revisar informes",
+          "Crear subcuentas → no validar facturas → omitir pagos",
+          "Imprimir PyG → crear factura → no registrar cobros"
+        ],
+        correct: 0,
+        explain: "El flujo completo une configuración inicial, ciclo operativo (facturar, cobrar/pagar y conciliar) y control mediante informes."
       }
     ];
 
-    // =========================================================================
-    // ESTADO DE LA APLICACIÓN
-    // =========================================================================
-    const state = {
-      studentName: "",
-      studentId: "",
-      studentGroup: "",
-      useTimer: false,
-      instantFeedback: true,
-      currentIndex: 0,
-      userAnswers: new Array(QUESTIONS.length).fill(null),
-      timerSeconds: 20 * 60,
-      timerInterval: null,
-      finished: false
-    };
+    let sessionQuestions = [];
+    let secondsLeft = 20 * 60;
+    let timerId = null;
 
-    // =========================================================================
-    // REFERENCIAS AL DOM
-    // =========================================================================
-    const startScreen = document.getElementById("startScreen");
-    const quizScreen = document.getElementById("quizScreen");
-    const resultScreen = document.getElementById("resultScreen");
-    const headerStatus = document.getElementById("headerStatus");
-    const headerStudentName = document.getElementById("headerStudentName");
-    const timerBadge = document.getElementById("timerBadge");
-    const timerDisplay = document.getElementById("timerDisplay");
-
-    const studentNameInput = document.getElementById("studentName");
-    const studentIdInput = document.getElementById("studentId");
-    const studentGroupInput = document.getElementById("studentGroup");
-    const nameError = document.getElementById("nameError");
-    const enableTimerCheckbox = document.getElementById("enableTimer");
-    const instantFeedbackCheckbox = document.getElementById("instantFeedback");
-
-    const unitBadge = document.getElementById("unitBadge");
-    const questionCounter = document.getElementById("questionCounter");
-    const answeredCounter = document.getElementById("answeredCounter");
-    const progressBar = document.getElementById("progressBar");
-    const questionDots = document.getElementById("questionDots");
-    const questionText = document.getElementById("questionText");
-    const optionsContainer = document.getElementById("optionsContainer");
-    const feedbackBox = document.getElementById("feedbackBox");
-    const feedbackIcon = document.getElementById("feedbackIcon");
-    const feedbackTitle = document.getElementById("feedbackTitle");
-    const feedbackText = document.getElementById("feedbackText");
-
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const finishBtn = document.getElementById("finishBtn");
-
-    const confirmModal = document.getElementById("confirmModal");
-    const confirmModalText = document.getElementById("confirmModalText");
-
-    // =========================================================================
-    // INICIO DEL CUESTIONARIO
-    // =========================================================================
-    document.getElementById("startBtn").addEventListener("click", () => {
-      const nameVal = studentNameInput.value.trim();
-      if (!nameVal) {
-        nameError.classList.remove("hidden");
-        studentNameInput.focus();
-        return;
+    function shuffle(arr) {
+      const copy = arr.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-      nameError.classList.add("hidden");
+      return copy;
+    }
 
-      state.studentName = nameVal;
-      state.studentId = studentIdInput.value.trim() || "No especificado";
-      state.studentGroup = studentGroupInput.value.trim() || "Formación General";
-      state.useTimer = enableTimerCheckbox.checked;
-      state.instantFeedback = instantFeedbackCheckbox.checked;
-      state.currentIndex = 0;
-      state.userAnswers = new Array(QUESTIONS.length).fill(null);
-      state.timerSeconds = 20 * 60;
-      state.finished = false;
+    function buildSession() {
+      const letters = ["A", "B", "C", "D"];
+      sessionQuestions = shuffle(QUESTIONS).map((item, idx) => {
+        const paired = item.options.map((text, origIdx) => ({
+          text,
+          isCorrect: origIdx === item.correct
+        }));
+        const shuffledOpts = shuffle(paired).map((opt, oIdx) => ({
+          ...opt,
+          letter: letters[oIdx]
+        }));
+        return {
+          ...item,
+          displayNum: idx + 1,
+          shuffledOpts
+        };
+      });
 
-      headerStudentName.textContent = state.studentName;
-      headerStatus.classList.remove("hidden");
+      const form = document.getElementById("quizForm");
+      form.innerHTML = sessionQuestions.map((item) => {
+        const optsHtml = item.shuffledOpts.map((opt, oIdx) => `
+          <label class="option" for="q_${item.displayNum}_${oIdx}">
+            <input type="radio" name="q_${item.displayNum}" id="q_${item.displayNum}_${oIdx}" value="${oIdx}" />
+            <span><strong>${opt.letter}.</strong>${opt.text}</span>
+          </label>
+        `).join("");
 
-      if (state.useTimer) {
-        timerBadge.classList.remove("hidden");
-        startTimer();
-      } else {
-        timerBadge.classList.add("hidden");
-      }
+        return `
+          <article class="card" id="card_${item.displayNum}">
+            <div class="q-header">
+              <span>${item.unit}</span>
+              <span>Pregunta ${item.displayNum} de${sessionQuestions.length}</span>
+            </div>
+            <p class="q-title">${item.displayNum}.${item.q}</p>
+            <div class="options">${optsHtml}</div>
+            <div class="feedback" id="fb_${item.displayNum}"></div>
+          </article>
+        `;
+      }).join("");
 
-      startScreen.classList.add("hidden");
-      resultScreen.classList.add("hidden");
-      quizScreen.classList.remove("hidden");
+      document.getElementById("result-panel").style.display = "none";
+      secondsLeft = 20 * 60;
+      updateTimerDisplay();
+    }
 
-      renderQuestion();
-    });
+    function updateTimerDisplay() {
+      const m = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+      const s = String(secondsLeft % 60).padStart(2, "0");
+      document.getElementById("timer").textContent = `Tiempo: ${m}:${s}`;
+    }
 
     function startTimer() {
-      clearInterval(state.timerInterval);
-      updateTimerDisplay();
-      state.timerInterval = setInterval(() => {
-        state.timerSeconds--;
-        updateTimerDisplay();
-        if (state.timerSeconds <= 0) {
-          clearInterval(state.timerInterval);
-          finalizeQuiz();
+      clearInterval(timerId);
+      timerId = setInterval(() => {
+        if (secondsLeft > 0) {
+          secondsLeft--;
+          updateTimerDisplay();
         }
       }, 1000);
     }
 
-    function updateTimerDisplay() {
-      const mins = Math.floor(Math.max(0, state.timerSeconds) / 60);
-      const secs = Math.max(0, state.timerSeconds) % 60;
-      timerDisplay.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-      if (state.timerSeconds <= 120) {
-        timerBadge.classList.add("text-rose-400", "border-rose-400");
-        timerBadge.classList.remove("text-emeraldOdoo-light");
-      }
-    }
+    function evaluateQuiz() {
+      let correctCount = 0;
+      const unitStats = {};
+      const reviewRows = [];
 
-    // =========================================================================
-    // RENDERIZADO DE PREGUNTAS Y OPCIONES
-    // =========================================================================
-    function renderQuestion() {
-      const q = QUESTIONS[state.currentIndex];
-      const selected = state.userAnswers[state.currentIndex];
-      const answeredTotal = state.userAnswers.filter((a) => a !== null).length;
-
-      unitBadge.textContent = `${q.unit} · ${q.unitTitle}`;
-      questionCounter.textContent = `Pregunta ${state.currentIndex + 1} de ${QUESTIONS.length}`;
-      answeredCounter.textContent = `${answeredTotal} de ${QUESTIONS.length} respondidas`;
-
-      const pct = ((state.currentIndex + 1) / QUESTIONS.length) * 100;
-      progressBar.style.width = `${pct}%`;
-
-      questionText.textContent = `${state.currentIndex + 1}. ${q.question}`;
-
-      // Renderizar puntos de navegación
-      questionDots.innerHTML = "";
-      QUESTIONS.forEach((_, idx) => {
-        const dot = document.createElement("button");
-        dot.type = "button";
-        dot.textContent = idx + 1;
-        let classes = "w-7 h-7 rounded-lg text-xs font-bold transition cursor-pointer border ";
-        if (idx === state.currentIndex) {
-          classes += "bg-navy text-white border-navy ring-2 ring-navy/20";
-        } else if (state.userAnswers[idx] !== null) {
-          if (state.instantFeedback) {
-            const isRight = state.userAnswers[idx] === QUESTIONS[idx].correct;
-            classes += isRight
-              ? "bg-emeraldOdoo-soft text-emeraldOdoo-dark border-emeraldOdoo"
-              : "bg-rose-50 text-rose-700 border-rose-300";
-          } else {
-            classes += "bg-emeraldOdoo-soft text-emeraldOdoo-dark border-emeraldOdoo/50";
-          }
-        } else {
-          classes += "bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100";
+      sessionQuestions.forEach((item) => {
+        if (!unitStats[item.unit]) {
+          unitStats[item.unit] = { total: 0, ok: 0 };
         }
-        dot.className = classes;
-        dot.addEventListener("click", () => {
-          state.currentIndex = idx;
-          renderQuestion();
+        unitStats[item.unit].total++;
+
+        const chosen = document.querySelector(`input[name="q_${item.displayNum}"]:checked`); const chosenIdx = chosen ? Number(chosen.value) : -1; const chosenOpt = chosenIdx >= 0 ? item.shuffledOpts[chosenIdx] : null; const rightOpt = item.shuffledOpts.find((o) => o.isCorrect); const isOk = Boolean(chosenOpt && chosenOpt.isCorrect);  const fb = document.getElementById(`fb_${item.displayNum}`);
+        fb.className = "feedback " + (isOk ? "ok" : "bad");
+
+        if (isOk) {
+          correctCount++;
+          unitStats[item.unit].ok++;
+          fb.innerHTML = `<strong>Correcto (${rightOpt.letter}).</strong>${item.explain}`;
+        } else {
+          const pickedText = chosenOpt ? `${chosenOpt.letter}.${chosenOpt.text}` : "Sin responder";
+          fb.innerHTML = `<strong>Incorrecto.</strong> Tu respuesta: <em>${pickedText}</em>. Respuesta correcta: <strong>${rightOpt.letter}. ${rightOpt.text}</strong>.${item.explain}`;
+        }
+
+        reviewRows.push({
+          num: item.displayNum,
+          q: item.q,
+          isOk,
+          picked: chosenOpt ? `${chosenOpt.letter}.${chosenOpt.text}` : "Sin responder",
+          right: `${rightOpt.letter}.${rightOpt.text}`
         });
-        questionDots.appendChild(dot);
       });
 
-      // Renderizar opciones
-      const letters = ["A", "B", "C", "D"];
-      optionsContainer.innerHTML = "";
+      const score10 = ((correctCount / sessionQuestions.length) * 10).toFixed(2);
+      const pctTotal = Math.round((correctCount / sessionQuestions.length) * 100);
+      const passed = Number(score10) >= 5;
 
-      q.options.forEach((optText, optIdx) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
+      const nameVal = document.getElementById("studentName").value.trim() || "No especificado";
+      const idVal = document.getElementById("studentId").value.trim() || "No especificado";
+      const groupVal = document.getElementById("groupName").value.trim() || "No especificado";
 
-        let cardClass =
-          "w-full text-left p-4 rounded-xl border-2 transition flex items-start gap-3.5 cursor-pointer ";
-        let badgeClass =
-          "w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center font-bold text-xs mt-0.5 ";
+      document.getElementById("outName").textContent = nameVal;
+      document.getElementById("outId").textContent = idVal;
+      document.getElementById("outGroup").textContent = groupVal;
+      document.getElementById("outScore").textContent = `${score10} / 10 (${correctCount}/${sessionQuestions.length} ·${pctTotal}%)`;
+      document.getElementById("outDate").textContent = new Date().toLocaleString("es-ES");
 
-        if (selected === null) {
-          cardClass += "border-slate-200 hover:border-emeraldOdoo hover:bg-emeraldOdoo-soft/30 bg-white";
-          badgeClass += "bg-slate-100 text-navy";
-        } else if (state.instantFeedback) {
-          if (optIdx === q.correct) {
-            cardClass += "border-emeraldOdoo bg-emeraldOdoo-soft/60 text-navy";
-            badgeClass += "bg-emeraldOdoo text-white";
-          } else if (optIdx === selected && selected !== q.correct) {
-            cardClass += "border-rose-400 bg-rose-50 text-rose-950";
-            badgeClass += "bg-rose-500 text-white";
-          } else {
-            cardClass += "border-slate-200 bg-slate-50/70 text-slate-500";
-            badgeClass += "bg-slate-200 text-slate-500";
-          }
-        } else {
-          if (optIdx === selected) {
-            cardClass += "border-navy bg-navy/5 text-navy";
-            badgeClass += "bg-navy text-white";
-          } else {
-            cardClass += "border-slate-200 hover:border-slate-300 bg-white text-slate-700";
-            badgeClass += "bg-slate-100 text-slate-600";
-          }
-        }
+      const badge = document.getElementById("statusBadge");
+      badge.textContent = passed ? "APTO · SUPERADO" : "NO APTO · REVISAR CONTENIDOS";
+      badge.className = "status-pill " + (passed ? "status-apto" : "status-noapto");
 
-        btn.className = cardClass;
-        btn.innerHTML = `
-          <span class="${badgeClass}">${letters[optIdx]}</span>
-          <span class="text-sm sm:text-base font-medium leading-snug flex-grow">${optText}</span>
-        `;
+      document.getElementById("unitTableBody").innerHTML = Object.entries(unitStats).map(([uName, st]) => {
+        const uPct = Math.round((st.ok / st.total) * 100);
+        return `<tr><td>${uName}</td><td>${st.ok} / ${st.total}</td><td>${uPct}%</td></tr>`;
+      }).join("");
 
-        btn.addEventListener("click", () => {
-          // Si ya respondió en modo instantáneo, permitimos cambiar solo si no está bloqueado;
-          // para mayor rigor didáctico, bloqueamos el cambio una vez revelada la respuesta en modo inmediato.
-          if (state.instantFeedback && state.userAnswers[state.currentIndex] !== null) {
-            return;
-          }
-          state.userAnswers[state.currentIndex] = optIdx;
-          renderQuestion();
-        });
+      document.getElementById("reviewList").innerHTML = reviewRows.map((r) => `
+        <div class="review-item">
+          <strong>${r.num}.${r.q}</strong><br/>
+          Estado: <strong>${r.isOk ? "Correcta" : "Incorrecta"}</strong> · Tu respuesta: ${r.picked} · Correcta: <strong>${r.right}</strong>
+        </div>
+      `).join("");
 
-        optionsContainer.appendChild(btn);
-      });
-
-      // Mostrar explicación si aplica
-      if (state.instantFeedback && selected !== null) {
-        const isCorrect = selected === q.correct;
-        feedbackBox.classList.remove(
-          "hidden",
-          "bg-emeraldOdoo-soft",
-          "border-emeraldOdoo",
-          "bg-rose-50",
-          "border-rose-300"
-        );
-        if (isCorrect) {
-          feedbackBox.classList.add("bg-emeraldOdoo-soft", "border-emeraldOdoo");
-          feedbackIcon.className = "fa-solid fa-circle-check text-emeraldOdoo text-lg mt-0.5";
-          feedbackTitle.className = "font-bold mb-1 text-emeraldOdoo-dark";
-          feedbackTitle.textContent = "¡Respuesta correcta!";
-        } else {
-          feedbackBox.classList.add("bg-rose-50", "border-rose-300");
-          feedbackIcon.className = "fa-solid fa-circle-xmark text-rose-600 text-lg mt-0.5";
-          feedbackTitle.className = "font-bold mb-1 text-rose-800";
-          feedbackTitle.textContent = `Respuesta incorrecta · La opción correcta es la ${letters[q.correct]}`;
-        }
-        feedbackText.textContent = q.explanation;
-      } else {
-        feedbackBox.classList.add("hidden");
-      }
-
-      // Control de botones Anterior / Siguiente / Finalizar
-      prevBtn.disabled = state.currentIndex === 0;
-      if (state.currentIndex === QUESTIONS.length - 1) {
-        nextBtn.classList.add("hidden");
-        finishBtn.classList.remove("hidden");
-      } else {
-        nextBtn.classList.remove("hidden");
-        finishBtn.classList.add("hidden");
-      }
+      const panel = document.getElementById("result-panel");
+      panel.style.display = "block";
+      panel.scrollIntoView({ behavior: "smooth" });
     }
 
-    prevBtn.addEventListener("click", () => {
-      if (state.currentIndex > 0) {
-        state.currentIndex--;
-        renderQuestion();
-      }
-    });
-
-    nextBtn.addEventListener("click", () => {
-      if (state.currentIndex < QUESTIONS.length - 1) {
-        state.currentIndex++;
-        renderQuestion();
-      }
-    });
-
-    finishBtn.addEventListener("click", () => {
-      const unanswered = state.userAnswers.filter((a) => a === null).length;
-      if (unanswered > 0) {
-        confirmModalText.textContent = `Tienes ${unanswered} pregunta${unanswered > 1 ? "s" : ""} sin responder. Las preguntas en blanco contarán como 0 puntos. ¿Deseas finalizar la evaluación ahora?`;
-        confirmModal.classList.remove("hidden");
-      } else {
-        finalizeQuiz();
-      }
-    });
-
-    document.getElementById("cancelModalBtn").addEventListener("click", () => {
-      confirmModal.classList.add("hidden");
-    });
-
-    document.getElementById("confirmModalBtn").addEventListener("click", () => {
-      confirmModal.classList.add("hidden");
-      finalizeQuiz();
-    });
-
-    // =========================================================================
-    // CÁLCULO DE RESULTADOS Y PANTALLA FINAL
-    // =========================================================================
-    function finalizeQuiz() {
-      clearInterval(state.timerInterval);
-      state.finished = true;
-
-      quizScreen.classList.add("hidden");
-      resultScreen.classList.remove("hidden");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-      let correct = 0;
-      const unitStats = {
-        "Unidad 1": { title: "Introducción, PGC y Diarios", total: 0, correct: 0 },
-        "Unidad 2": { title: "Operaciones y Conciliación", total: 0, correct: 0 },
-        "Unidad 3": { title: "Informes y Control Contable", total: 0, correct: 0 }
-      };
-
-      QUESTIONS.forEach((q, idx) => {
-        unitStats[q.unit].total++;
-        if (state.userAnswers[idx] === q.correct) {
-          correct++;
-          unitStats[q.unit].correct++;
-        }
-      });
-
-      const wrong = QUESTIONS.length - correct;
-      const percent = Math.round((correct / QUESTIONS.length) * 100);
-      const gradeOver10 = ((correct / QUESTIONS.length) * 10).toFixed(2).replace(".", ",");
-      const isPassed = correct / QUESTIONS.length >= 0.5;
-
-      // Rellenar cabecera del certificado
-      document.getElementById("reportStudentName").textContent = state.studentName;
-      document.getElementById("reportStudentId").textContent = state.studentId;
-      document.getElementById("reportStudentGroup").textContent = state.studentGroup;
-
-      const now = new Date();
-      document.getElementById("reportDate").textContent = now.toLocaleString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-
-      const statusStamp = document.getElementById("statusStamp");
-      if (isPassed) {
-        statusStamp.textContent = "APTO · SUPERADO";
-        statusStamp.className =
-          "px-4 py-2 rounded-xl font-display font-extrabold text-sm sm:text-base uppercase tracking-wider border-2 border-emeraldOdoo-light bg-emeraldOdoo/20 text-emeraldOdoo-light";
-      } else {
-        statusStamp.textContent = "NO APTO · REPASAR";
-        statusStamp.className =
-          "px-4 py-2 rounded-xl font-display font-extrabold text-sm sm:text-base uppercase tracking-wider border-2 border-rose-400 bg-rose-500/20 text-rose-200";
-      }
-
-      document.getElementById("finalGrade").textContent = gradeOver10;
-      document.getElementById("finalPercent").textContent = `${percent} %`;
-      document.getElementById("correctCount").textContent = correct;
-      document.getElementById("wrongCount").textContent = wrong;
-
-      // Renderizar desglose por unidades
-      const unitContainer = document.getElementById("unitBreakdownContainer");
-      unitContainer.innerHTML = "";
-      Object.entries(unitStats).forEach(([uKey, uData]) => {
-        const uPct = Math.round((uData.correct / uData.total) * 100);
-        const card = document.createElement("div");
-        card.className = "bg-slateBg p-4 rounded-xl border border-slate-200";
-        card.innerHTML = `
-          <div class="flex justify-between items-center mb-1">
-            <span class="text-xs font-bold text-emeraldOdoo uppercase">${uKey}</span>
-            <span class="text-xs font-bold text-navy">${uData.correct}/${uData.total} (${uPct}%)</span>
-          </div>
-          <p class="text-sm font-bold text-navy mb-2">${uData.title}</p>
-          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-            <div class="h-full bg-emeraldOdoo rounded-full" style="width: ${uPct}%"></div>
-          </div>
-        `;
-        unitContainer.appendChild(card);
-      });
-
-      // Renderizar revisión detallada
-      const reviewContainer = document.getElementById("reviewContainer");
-      reviewContainer.innerHTML = "";
-      const letters = ["A", "B", "C", "D"];
-
-      QUESTIONS.forEach((q, idx) => {
-        const userAns = state.userAnswers[idx];
-        const isRight = userAns === q.correct;
-
-        const item = document.createElement("div");
-        item.className = `p-4 sm:p-5 rounded-xl border ${
-          isRight ? "border-emeraldOdoo/40 bg-emeraldOdoo-soft/20" : "border-rose-200 bg-rose-50/30"
-        }`;
-
-        const userText =
-          userAns !== null
-            ? `${letters[userAns]}. ${q.options[userAns]}`
-            : "Sin responder";
-        const correctText = `${letters[q.correct]}. ${q.options[q.correct]}`;
-
-        item.innerHTML = `
-          <div class="flex items-start justify-between gap-3 mb-2">
-            <span class="text-xs font-bold uppercase tracking-wide ${
-              isRight ? "text-emeraldOdoo-dark" : "text-rose-700"
-            }">
-              ${q.unit} · Pregunta ${idx + 1}
-            </span>
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${
-              isRight ? "bg-emeraldOdoo text-white" : "bg-rose-600 text-white"
-            }">
-              ${isRight ? "Correcta" : "Incorrecta"}
-            </span>
-          </div>
-          <p class="text-sm sm:text-base font-bold text-navy mb-3">${q.question}</p>
-          <div class="space-y-1.5 text-xs sm:text-sm mb-3">
-            <p class="${isRight ? "text-emerald-800 font-semibold" : "text-rose-700 font-semibold"}">
-              <i class="fa-solid ${isRight ? "fa-check" : "fa-xmark"} mr-1.5"></i>
-              Tu respuesta: <span class="font-normal">${userText}</span>
-            </p>
-            ${
-              !isRight
-                ? `<p class="text-emerald-800 font-semibold">
-                    <i class="fa-solid fa-check-double mr-1.5"></i>
-                    Respuesta correcta: <span class="font-normal">${correctText}</span>
-                  </p>`
-                : ""
-            }
-          </div>
-          <p class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 leading-relaxed">
-            <strong class="text-navy">Justificación:</strong> ${q.explanation}
-          </p>
-        `;
-        reviewContainer.appendChild(item);
-      });
-    }
-
-    // =========================================================================
-    // DESCARGA DE INFORME EN PDF / IMPRESIÓN
-    // =========================================================================
-    document.getElementById("downloadPdfBtn").addEventListener("click", () => {
-      const pdfAlert = document.getElementById("pdfAlert");
-      const element = document.getElementById("pdfReportArea");
-      const safeName = state.studentName
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9]+/g, "_");
-      const filename = `Evaluacion_Odoo_Contabilidad_${safeName || "alumno"}.pdf`;
-
-      if (typeof html2pdf !== "undefined") {
-        pdfAlert.textContent = "Generando archivo PDF con tu certificado y desglose completo...";
-        pdfAlert.classList.remove("hidden");
-
-        const opt = {
-          margin: [10, 10, 10, 10],
-          filename: filename,
-          image: { type: "jpeg", quality: 0.98 },
+    function downloadPdf() {
+      const element = document.getElementById("pdf-content");
+      const rawName = (document.getElementById("studentName").value.trim() || "alumno").replace(/\s+/g, "_");
+      if (typeof html2pdf === "function") {
+        html2pdf().set({
+          margin: 10,
+          filename: `Evaluacion_Contabilidad_Odoo_${rawName}.pdf`,
+          image: { type: "jpeg", quality: 0.96 },
           html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["avoid-all", "css", "legacy"] }
-        };
-
-        html2pdf()
-          .set(opt)
-          .from(element)
-          .save()
-          .then(() => {
-            pdfAlert.textContent = `¡Descarga completada! Se ha guardado el archivo "${filename}".`;
-          })
-          .catch(() => {
-            pdfAlert.textContent = "Abriendo vista de impresión para guardar como PDF...";
-            window.print();
-          });
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+        }).from(element).save();
       } else {
         window.print();
       }
-    });
+    }
 
-    document.getElementById("printBtn").addEventListener("click", () => {
-      window.print();
-    });
-
-    document.getElementById("retryBtn").addEventListener("click", () => {
-      clearInterval(state.timerInterval);
-      resultScreen.classList.add("hidden");
-      headerStatus.classList.add("hidden");
-      startScreen.classList.remove("hidden");
+    document.getElementById("submitBtn").addEventListener("click", evaluateQuiz);
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      buildSession();
+      startTimer();
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
+    document.getElementById("downloadPdfBtn").addEventListener("click", downloadPdf);
+
+    buildSession();
+    startTimer();
   </script>
 </body>
 </html>
